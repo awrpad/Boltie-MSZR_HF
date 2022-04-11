@@ -1,5 +1,6 @@
 package aut.bme.hu.boltie
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
@@ -14,6 +15,11 @@ class LoginActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         // TODO: Remove current user
+    }
+
+    fun loginOnClickListener(v: android.view.View) {
+        val intent = Intent(this, FunctionSelectActivity::class.java)
+        startActivity(intent)
     }
 
 
