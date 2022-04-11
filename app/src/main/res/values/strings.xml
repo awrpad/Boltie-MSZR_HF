@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Boltie</string>
+    <string name="login">Bejelentkezés</string>
 </resources>
