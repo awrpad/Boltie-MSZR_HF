@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">Boltie</string>
     <string name="login">Bejelentkezés</string>
+    <string name="workplace_name">Munkahely neve</string>
+    <string name="sale">Eladás</string>
+    <string name="restock">Betárazás</string>
+    <string name="waste">Selejt</string>
+    <string name="buy_back">Visszáru</string>
+    <string name="see_stock">Árukészlet megtekintése</string>
 </resources>
