@@ -1,3 +1,3 @@
 # Boltie
-## Mobilszoftver Laboratórium feladat
+## Mobilszoftver Rendszerek / Laboratórium feladat
 _Készíti: Wágner Árpád_
