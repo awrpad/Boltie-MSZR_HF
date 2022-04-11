@@ -7,7 +7,4 @@ import aut.bme.hu.boltie.model.User
 class FunctionSelectViewModel(
 
 ) : ViewModel() {
-    val user: MutableLiveData<User> by lazy {
-        MutableLiveData<User>()
-    }
 }
