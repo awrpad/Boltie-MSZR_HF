@@ -88,7 +88,7 @@ paths:
       operationId: "delUserById"
       responses:
         "204":
-          description: "Successfuly deleted User (no response content)"
+          description: "Successfully deleted User (no response content)"
         "404":
           description: "Could not find User to delete"
   /product/{barcode}/{workplaceId}:
@@ -160,4 +160,3 @@ paths:
             $ref: "#/definitions/Role"
         "404":
           description: "User or Workplace not found"
-    

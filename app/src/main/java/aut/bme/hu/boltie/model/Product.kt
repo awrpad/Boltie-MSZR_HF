@@ -8,5 +8,4 @@ class Product(
     @SerializedName("name") val name: String,
     @SerializedName("desc") val desc: String,
     @SerializedName("price") val price: Float
-) {
-}
+) { }
