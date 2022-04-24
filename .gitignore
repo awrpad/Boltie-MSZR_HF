@@ -13,3 +13,9 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+*.aux
+*.synctex.gz
+*.toc
+/spec/moblabspec.log
+
