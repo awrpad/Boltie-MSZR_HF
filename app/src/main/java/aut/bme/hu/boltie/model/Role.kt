@@ -4,5 +4,6 @@ package aut.bme.hu.boltie.model
 enum class Role {
     Manager,
     Seller,
-    Loader
+    Loader,
+    None
 }
