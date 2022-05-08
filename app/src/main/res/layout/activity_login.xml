@@ -30,7 +30,7 @@
         android:layout_marginTop="@dimen/title_to_username"
         android:layout_marginEnd="16dp"
         android:ems="10"
-        android:hint="Felhasználó"
+        android:hint="@string/txt_user_name"
         android:inputType="textPersonName"
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"

@@ -10,4 +10,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="checked_so_far">Eddig beolvasott termékek</string>
+    <string name="title_activity_login_compose">LoginActivityCompose</string>
+    <string name="txt_user_name">Felhasználónév</string>
+    <string name="txt_password">Jelszó</string>
 </resources>
