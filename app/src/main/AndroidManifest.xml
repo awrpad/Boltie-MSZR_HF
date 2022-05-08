@@ -10,6 +10,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Boltie">
         <activity
+            android:name=".FunctionSelectorActivityCompose"
+            android:exported="false"
+            android:label="@string/title_activity_function_selector_compose"
+            android:theme="@style/Theme.Boltie" />
+        <activity
             android:name=".LoginActivityCompose"
             android:exported="false"
             android:label="@string/title_activity_login_compose"
@@ -28,7 +33,7 @@
         </activity>
         <activity
             android:name=".FunctionSelectActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
     </application>
 
 </manifest>

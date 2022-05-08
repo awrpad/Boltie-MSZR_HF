@@ -13,4 +13,5 @@
     <string name="title_activity_login_compose">LoginActivityCompose</string>
     <string name="txt_user_name">Felhasználónév</string>
     <string name="txt_password">Jelszó</string>
+    <string name="title_activity_function_selector_compose">FunctionSelectorActivityCompose</string>
 </resources>
