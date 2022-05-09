@@ -16,4 +16,8 @@
     <string name="title_activity_function_selector_compose">FunctionSelectorActivityCompose</string>
     <string name="greeting">Üdvözlünk, %1$s!</string>
     <string name="fn_select">Funkcióválasztás</string>
+    <string name="title_activity_barcode_compose">BarcodeActivityCompose</string>
+    <string name="no_camera_permission">Az alkalmazás nem kapott engedélyt a kamerához való hozzáféréshez, így nem tud működni.</string>
+    <string name="select_workplace">Munkahely kiválasztása</string>
+    <string name="title_activity_barcode_compose2">BarcodeActivityCompose2</string>
 </resources>

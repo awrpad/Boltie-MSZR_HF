@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="aut.bme.hu.boltie">
 
+    <uses-feature android:name="android.hardware.camera.any" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,27 +14,37 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Boltie">
         <activity
+            android:name=".BarcodeActivityCompose2"
+            android:exported="false"
+            android:label="@string/title_activity_barcode_compose2"
+            android:theme="@style/Theme.Boltie" />
+        <activity
+            android:name=".BarcodeActivityCompose"
+            android:exported="false"
+            android:label="@string/title_activity_barcode_compose"
+            android:theme="@style/Theme.Boltie" />
+        <activity
             android:name=".FunctionSelectorActivityCompose"
             android:exported="false"
             android:label="@string/title_activity_function_selector_compose"
             android:theme="@style/Theme.Boltie" />
         <activity
             android:name=".LoginActivityCompose"
-            android:exported="false"
+            android:exported="true"
             android:label="@string/title_activity_login_compose"
-            android:theme="@style/Theme.Boltie" />
-        <activity
-            android:name=".BarcodeReaderActivity"
-            android:exported="false" />
-        <activity
-            android:name=".LoginActivity"
-            android:exported="true">
+            android:theme="@style/Theme.Boltie">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".BarcodeReaderActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false"></activity>
         <activity
             android:name=".FunctionSelectActivity"
             android:exported="false" />

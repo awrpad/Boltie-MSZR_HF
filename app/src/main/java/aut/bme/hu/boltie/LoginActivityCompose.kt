@@ -1,13 +1,13 @@
 package aut.bme.hu.boltie
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.expandHorizontally
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -26,7 +26,14 @@ class LoginActivityCompose : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Greeting("Android")
+                    CreateLoginView {
+                        // TODO: Get the user first
+                        val intent = Intent(
+                            this,
+                            FunctionSelectorActivityCompose::class.java
+                        )
+                        startActivity(intent)
+                    }
                 }
             }
         }
@@ -34,23 +41,9 @@ class LoginActivityCompose : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Composable
-fun CreateLoginView() {
-    var userName = ""
-    var password = ""
-
-    /*Spacer(modifier = Modifier.height(24.dp))
-    Text(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 16.dp)
-            .width(IntrinsicSize.Max),
-        text = stringResource(id = R.string.app_name)
-    )*/
+fun CreateLoginView(onLogin: () -> Unit) {
+    var userName by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -75,7 +68,7 @@ fun CreateLoginView() {
         Button(
             modifier = Modifier
                 .wrapContentWidth(Alignment.CenterHorizontally),
-            onClick = {}
+            onClick = { onLogin() }
         ) {
             Text(text = stringResource(id = R.string.login))
         }
@@ -87,6 +80,6 @@ fun CreateLoginView() {
 fun DefaultPreview() {
     BoltieTheme {
         //Greeting("Android")
-        CreateLoginView()
+        //CreateLoginView()
     }
 }

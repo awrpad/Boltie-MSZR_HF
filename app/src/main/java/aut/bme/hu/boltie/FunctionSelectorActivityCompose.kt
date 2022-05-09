@@ -1,5 +1,7 @@
 package aut.bme.hu.boltie
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -27,6 +29,15 @@ class FunctionSelectorActivityCompose : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
+                    val u = User(
+                        31415,
+                        "x@y.z",
+                        "Pista",
+                        "Kis",
+                        "Kispista",
+                        "", ""
+                    )
+                    CreateFunctionSelectorView(context = this, user = u, role = Role.Manager)
                 }
             }
         }
@@ -34,7 +45,7 @@ class FunctionSelectorActivityCompose : ComponentActivity() {
 }
 
 @Composable
-fun CreateFunctionSelectorView(user: User, role: Role) {
+fun CreateFunctionSelectorView(context: Context, user: User, role: Role) {
     val buttonModifier = Modifier
         .fillMaxWidth()
         .width(IntrinsicSize.Max)
@@ -58,7 +69,10 @@ fun CreateFunctionSelectorView(user: User, role: Role) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if(role.ordinal >= Role.Seller.ordinal) {
-                Button(modifier = buttonModifier, onClick = { /*TODO*/ }) {
+                Button(modifier = buttonModifier, onClick = {
+                    val intent = Intent(context, BarcodeActivityCompose2::class.java)
+                    context.startActivity(intent)
+                }) {
                     Text(text = stringResource(id = R.string.sale))
                 }
                 Spacer(modifier = Modifier.height(24.dp))
@@ -82,7 +96,7 @@ fun CreateFunctionSelectorView(user: User, role: Role) {
                 Spacer(modifier = Modifier.height(24.dp))
             }
             Button(modifier = buttonModifier, onClick = { /*TODO*/ }) {
-                Text(text = "Munkahely kiválasztása")
+                Text(text = stringResource(R.string.select_workplace))
             }
         }
     }
@@ -100,6 +114,6 @@ fun FSPreview() {
             "Kispista",
             "", ""
         )
-        CreateFunctionSelectorView(u, Role.Manager)
+        //CreateFunctionSelectorView(u, Role.Manager)
     }
 }

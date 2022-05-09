@@ -18,8 +18,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun loginOnClickListener(v: android.view.View) {
-        val intent = Intent(this, FunctionSelectActivity::class.java)
-        startActivity(intent)
+
     }
 
 
