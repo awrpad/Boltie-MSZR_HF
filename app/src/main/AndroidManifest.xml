@@ -14,11 +14,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Boltie">
         <activity
-            android:name=".BarcodeActivityCompose2"
-            android:exported="false"
-            android:label="@string/title_activity_barcode_compose2"
-            android:theme="@style/Theme.Boltie" />
-        <activity
             android:name=".BarcodeActivityCompose"
             android:exported="false"
             android:label="@string/title_activity_barcode_compose"
@@ -39,15 +34,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".BarcodeReaderActivity"
-            android:exported="false" />
-        <activity
-            android:name=".LoginActivity"
-            android:exported="false"></activity>
-        <activity
-            android:name=".FunctionSelectActivity"
-            android:exported="false" />
     </application>
 
 </manifest>
