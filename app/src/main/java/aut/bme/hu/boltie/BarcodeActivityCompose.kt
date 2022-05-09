@@ -1,57 +1,39 @@
 package aut.bme.hu.boltie
 
-import android.Manifest
-import android.content.pm.PackageManager
-import android.os.Build
+import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
-import android.widget.Toast
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.camera.core.CameraSelector
+import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import android.util.Size
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import aut.bme.hu.boltie.ui.theme.BoltieTheme
-import java.util.concurrent.ExecutorService
+import com.google.mlkit.vision.barcode.BarcodeScannerOptions
+import com.google.mlkit.vision.barcode.BarcodeScanning
+import com.google.mlkit.vision.barcode.common.Barcode
+import com.google.mlkit.vision.common.InputImage
+import java.util.concurrent.Executors
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 class BarcodeActivityCompose : ComponentActivity() {
-    companion object {
-        private val requiredPermissions = mutableListOf (Manifest.permission.CAMERA).apply {
-            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
-                add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            }
-        }.toTypedArray()
-
-        private const val REQUEST_CODE_PERMISSIONS = 10
-    }
-    private lateinit var cameraExecutor: ExecutorService
-
-    private fun allPermissionsGranted() = requiredPermissions.all{
-        ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if(!allPermissionsGranted()) {
-            ActivityCompat.requestPermissions(this, requiredPermissions, REQUEST_CODE_PERMISSIONS)
-        }
-
         setContent {
             BoltieTheme {
                 // A surface container using the 'background' color from the theme
@@ -59,82 +41,114 @@ class BarcodeActivityCompose : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    if(allPermissionsGranted()) {
-                        CreateBarcodeActivity()
-                    }
-                    else {
-                        ShowLackOfPermissions()
-                    }
+                    CreateCameraPreview()
                 }
             }
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_CODE_PERMISSIONS) {
-            if (allPermissionsGranted()) {
-                setContent {
-                    CreateBarcodeActivity()
-                }
-            }
-            else {
-                Toast.makeText(this,
-                    "Permissions not granted by the user.",
-                    Toast.LENGTH_SHORT).show()
-                finish()
-            }
-        }
-    }
-}
+    @SuppressLint("UnsafeOptInUsageError")
+    @Composable
+    private fun CreateCameraPreview() {
+        val context = LocalContext.current
+        val lifecycleOwner = LocalLifecycleOwner.current
+        val lensFacing = CameraSelector.LENS_FACING_BACK
+        val imageCapture = remember {ImageCapture.Builder().build()}
 
-@Composable
-private fun ShowLackOfPermissions() {
-    Text(text = stringResource(R.string.no_camera_permission))
-}
+        val preview = Preview.Builder().setTargetResolution(Size(1280, 720)).build()
+        val cameraSelector = CameraSelector.Builder()
+            .requireLensFacing(lensFacing)
+            .build()
 
-@Composable
-fun CreateBarcodeActivity() {
-    val lifecycleOwner = LocalLifecycleOwner.current
-    val context = LocalContext.current
-    val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
-    
-    Column(modifier = Modifier.fillMaxSize()) {
-        AndroidView(
-            factory = { ctx ->
-                val previewView = PreviewView(ctx)
-                val executor = ContextCompat.getMainExecutor(ctx)
-                cameraProviderFuture.addListener({
-                    val cameraProvider = cameraProviderFuture.get()
-                    val preview = androidx.camera.core.Preview.Builder().build().also {
-                        it.setSurfaceProvider(previewView.surfaceProvider)
+        val imageAnalysis = ImageAnalysis.Builder()
+            .setTargetResolution(Size(1280, 720))
+            //.setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_YUV_420_888)
+            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+            .build()
+        imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(this)) { image ->
+            val img = image.image
+            if (img != null) {
+                val inputImage = InputImage.fromMediaImage(img, image.imageInfo.rotationDegrees)
+
+                // Process image searching for barcodes
+                val options = BarcodeScannerOptions.Builder()
+                    .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
+                    .setBarcodeFormats(Barcode.FORMAT_UPC_A)
+                    .setBarcodeFormats(Barcode.FORMAT_UPC_E)
+                    .build()
+
+                val scanner = BarcodeScanning.getClient(options)
+                scanner.process(inputImage)
+                    .addOnSuccessListener { barcodes ->
+                        for (barcode in barcodes) {
+                            barcode.displayValue?.let { Log.i("ScannedBarcode", "Barcode value: $it") } ?: Log.w("ScannedBarcode", "Found something but the value could not be retrieved")
+                        }
                     }
+                    .addOnFailureListener { }
+            }
 
-                    val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+            image.close()
+        }
 
-                    cameraProvider.unbindAll()
-                    cameraProvider.bindToLifecycle(
-                        lifecycleOwner,
-                        cameraSelector,
-                        preview
-                    )
-                }, executor)
-                previewView
-            },
-            modifier = Modifier.weight(1f)
-        )
-        Row(modifier = Modifier.weight(1f)) {
-            Text(text = "Itt lesz a funkciónak megfelelő dolog")
+        val previewView = remember {PreviewView(context)}
+        LaunchedEffect(lensFacing) {
+            val cameraProvider = context.getCameraProvider()
+            cameraProvider.unbindAll()
+            cameraProvider.bindToLifecycle(
+                lifecycleOwner,
+                cameraSelector,
+                imageAnalysis,
+                preview,
+                imageCapture
+            )
+            preview.setSurfaceProvider(previewView.surfaceProvider)
+        }
+
+        Column(modifier = Modifier.fillMaxSize()) {
+            AndroidView({previewView}, modifier = Modifier.fillMaxSize()) { }
+            Row(modifier = Modifier.fillMaxSize()) {
+                Text(text = "Kérlek, olvasd be az eladandó termék vonalkódját!")
+            }
         }
     }
-
 }
 
-@Preview(showBackground = true)
-@Composable
-fun BarcodePreview() {
-    BoltieTheme {
-        CreateBarcodeActivity()
+suspend fun Context.getCameraProvider(): ProcessCameraProvider = suspendCoroutine { continuation ->
+    ProcessCameraProvider.getInstance(this).also { cameraProvider ->
+        cameraProvider.addListener({
+            continuation.resume(cameraProvider.get())
+        }, ContextCompat.getMainExecutor(this))
     }
 }
+
+/*class BarcodeAnalyzer : ImageAnalysis.Analyzer {
+    @SuppressLint("UnsafeOptInUsageError")
+    override fun analyze(image: ImageProxy) {
+        val img = image.image
+        if (img != null) {
+            val inputImage = InputImage.fromMediaImage(img, image.imageInfo.rotationDegrees)
+
+            // Process image searching for barcodes
+            val options = BarcodeScannerOptions.Builder()
+                .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
+                .setBarcodeFormats(Barcode.FORMAT_UPC_A)
+                .setBarcodeFormats(Barcode.FORMAT_UPC_E)
+                .build()
+
+            val scanner = BarcodeScanning.getClient(options)
+
+            scanner.process(inputImage)
+                .addOnSuccessListener { barcodes ->
+                    for (barcode in barcodes) {
+                        barcode.displayValue?.let { Log.i("ScannedBarcode", it) }
+                    }
+                }
+                .addOnFailureListener { }
+        }
+
+        image.close()
+    }
+}*/
+
+
 

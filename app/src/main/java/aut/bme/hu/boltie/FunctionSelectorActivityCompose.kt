@@ -70,7 +70,7 @@ fun CreateFunctionSelectorView(context: Context, user: User, role: Role) {
         ) {
             if(role.ordinal >= Role.Seller.ordinal) {
                 Button(modifier = buttonModifier, onClick = {
-                    val intent = Intent(context, BarcodeActivityCompose2::class.java)
+                    val intent = Intent(context, BarcodeActivityCompose::class.java)
                     context.startActivity(intent)
                 }) {
                     Text(text = stringResource(id = R.string.sale))
